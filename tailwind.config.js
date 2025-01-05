@@ -8,8 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "var(--background)", // Custom background color
+        foreground: "var(--foreground)", // Custom foreground color
+      },
+      screens: {
+        xxs: "260px", // Extra extra small screens
+        xs: "480px",  // Extra small screens
       },
     },
   },

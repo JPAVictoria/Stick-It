@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: #222629;
+  background-image: radial-gradient(circle at -40% -35%, #0000001e 59%, transparent 59.05%),radial-gradient(circle at -79% 48%, #0000001e 45%, transparent 45.05%),radial-gradient(circle at -67% -9%, #00000024 45%, transparent 45.05%),linear-gradient(-52deg, #0000001e 51%, transparent 51.05%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+
+.dragging {
+  opacity: 0.6; /* Semi-transparent */
+}
+
+
+
+.box-shadow{
+
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
+
+}
+
+/* globals.css */
+/* globals.css */
+
+/* globals.css */
+
+.dragging-container {
+
+  background-image: radial-gradient(circle, #222629, #1f2225, #1d1f21, #1a1b1d, #171819);  
+  
+  animation: fadeBackground 0.5s ease-in-out;
+
+
+}
+
+
+
+
+@keyframes fadeBackground {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+
+
+
+/* globals.css */
+
+
+.header-alignment {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.text-alignment h1 {
+    margin-bottom: 0.5rem; /* Add spacing between h1 and p */
+}
+  
+
+
+
+.garbage-size{
+
+  width: 150px;
+  height: 100px;
+  
+}
+
+.note-storage:hover {
+
+  cursor: pointer;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+}
