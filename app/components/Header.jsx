@@ -12,7 +12,6 @@ export default function Header({ setNotes, setPopup }) {
   const [newNote, setNewNote] = useState({ title: '', description: '' });
   const [selectedNote, setSelectedNote] = useState(null);
   const [isGarbageHovered, setIsGarbageHovered] = useState(false);
-  const resetNotePosition = useRef(() => {});
 
   const handleOpen = (note = null) => {
     if (note) {
@@ -90,54 +89,68 @@ export default function Header({ setNotes, setPopup }) {
   };
 
   return (
+
     <div className="w-full">
-      <div className="header-container flex justify-between items-center w-full px-6">
-        <div className="flex-grow pl-11 text-center">
-          <h1 className="font-bold text-xl text-paragraph-color md:text-5xl pt-7 pb-2 text-[#D1D7E0] animate__animated animate__slideInRight">
-            STICK IT
-          </h1>
-          <button
-            className="pt-2 text-lg text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100"
-            onClick={() => handleOpen()}
-          >
-            Add note
-          </button>
-        </div>
+  <div className="header-container flex justify-between items-center w-full px-6">
+    <div className="flex flex-col items-center text-center w-full">
+      <h1 className="font-bold text-xl text-paragraph-color md:text-5xl pt-7 pb-2 text-[#D1D7E0] animate__animated animate__slideInRight">
+        STICK IT
+      </h1>
 
-        <div
-          className="garbage-container pt-7"
-          onDragOver={handleDragOverGarbage}
-          onDragLeave={handleDragLeaveGarbage}
-          onDrop={handleDropOnGarbage}
-          style={{
-            width: '150px',
-            height: '150px',
-            borderWidth: '2px',
-            borderStyle: 'dashed',
-            borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
-            borderRadius: '10px',
-            transition: 'border-color 0.2s ease-in-out',
-          }}
-        >
-          <Image
-            src={isGarbageHovered ? garbageOpen : garbageClose}
-            alt="garbageIcon"
-            className="garbage-size"
-            width={100}
-            height={100}
-          />
-        </div>
-      </div>
-      <hr className="w-full border-t-2 border-gray-400 my-4" />
+      {/* Add note button */}
+      <button
+        className="pt-2 text-lg text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100 mb-2"
+        onClick={() => handleOpen()}
+      >
+        Add note
+      </button>
 
-      <Modal
-        open={open}
-        handleClose={handleClose}
-        setNewNote={setNewNote}
-        handleSave={handleSave}
-        note={newNote}
-        isEdit={isEdit}
+      {/* Exit button */}
+      <button
+        className="text-lg pt-1 text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100"
+      >
+        Exit?
+      </button>
+    </div>
+
+    {/* Garbage container */}
+    <div
+      className="garbage-container pt-7"
+      onDragOver={handleDragOverGarbage}
+      onDragLeave={handleDragLeaveGarbage}
+      onDrop={handleDropOnGarbage}
+      style={{
+        width: '150px',
+        height: '150px',
+        borderWidth: '2px',
+        borderStyle: 'dashed',
+        borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
+        borderRadius: '10px',
+        transition: 'border-color 0.2s ease-in-out',
+      }}
+    >
+      <Image
+        src={isGarbageHovered ? garbageOpen : garbageClose}
+        alt="garbageIcon"
+        className="garbage-size"
+        width={100}
+        height={100}
       />
     </div>
+  </div>
+
+  <hr className="w-full border-t-2 border-gray-400 my-4" />
+
+  <Modal
+    open={open}
+    handleClose={handleClose}
+    setNewNote={setNewNote}
+    handleSave={handleSave}
+    note={newNote}
+    isEdit={isEdit}
+  />
+</div>
+
+
   );
 }

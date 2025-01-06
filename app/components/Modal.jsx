@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
@@ -22,8 +23,7 @@ export default function Modal({ open, handleClose, setNewNote, handleSave, note,
   };
 
   return (
-    <Dialog open={open} onClose={() => { handleClose(); resetError(); }}
-    sx={{ "& .MuiDialog-paper": { borderRadius: "10px" } }}>
+    <Dialog open={open} onClose={() => { handleClose();}} sx={{ "& .MuiDialog-paper": { borderRadius: "10px" } }}>
       <div className="rounded-t-[10px] bg-[#383D41] text-[#D1D7E0]">
         <DialogTitle>{isEdit ? 'Update a Note' : 'Paste a Note'}</DialogTitle>
       </div>

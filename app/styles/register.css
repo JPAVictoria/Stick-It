@@ -5,6 +5,7 @@
 
 body {
     background-color: #222629;
+    overflow: hidden;
   }
 
   @keyframes slideUp {
@@ -24,7 +25,6 @@ body {
   margin-top: 5%;
   margin-left: auto;
   margin-right: auto;
-  position: relative;
   max-width: 430px;
   width: 100%;
   background: #222629;
@@ -71,14 +71,8 @@ form .input-box input{
   border-radius: 6px;
   transition: all 0.3s ease;
 }
-.input-box input:focus,
-.input-box input:valid{
-  border-color: #4070f4;
-}
-form .policy{
-  display: flex;
-  align-items: center;
-}
+
+
 form h3{
   color: #ffffff;
   font-size: 14px;

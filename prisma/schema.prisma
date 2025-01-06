@@ -19,6 +19,13 @@ model Note {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  deleted Boolean @default(false)
+  deleted     Boolean  @default(false)
+}
 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
 }
