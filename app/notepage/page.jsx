@@ -6,7 +6,7 @@ import Modal from '@/app/components/Modal';
 import DeleteDialog from '@/app/components/DeleteDialog';
 import Popup from '@/app/components/Popup';
 import Loader from '@/app/components/Loader'; // Import the loader component
-import '@/app/NotePage/styles.css';
+import '@/app/styles/notepage.css';
 
 const getTokenFromCookies = () => {
   const name = 'jwt=';
