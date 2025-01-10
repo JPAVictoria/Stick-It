@@ -4,7 +4,7 @@ import React from 'react';
 // components/Loader.jsx
 export default function Loader() {
   return (
-<React.Fragment>
+<div className = "background-loader">
      <svg viewBox="0 0 100 100" width="100" height="100">
         <g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="6">
           {/* Left line */}
@@ -77,6 +77,6 @@ export default function Loader() {
           />
         </g>
       </svg>
-      </React.Fragment> 
+      </div> 
   );
 }
