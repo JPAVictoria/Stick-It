@@ -1,9 +1,11 @@
 import '@/app/globals.css';
 
+import React from 'react';
 // components/Loader.jsx
 export default function Loader() {
-    return (
-      <svg viewBox="0 0 100 100" width="100" height="100">
+  return (
+<React.Fragment>
+     <svg viewBox="0 0 100 100" width="100" height="100">
         <g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="6">
           {/* Left line */}
           <path d="M 21 40 V 59">
@@ -75,6 +77,6 @@ export default function Loader() {
           />
         </g>
       </svg>
-    );
-  }
-  
+      </React.Fragment> 
+  );
+}
