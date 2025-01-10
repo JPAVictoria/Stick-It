@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
-import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation'; // Import useRouter for page navigation
 
 function SlideTransition(props) {
   return <Slide {...props} direction="up" />;
@@ -18,6 +18,8 @@ export default function Login() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+  const router = useRouter(); // Initialize useRouter for navigation
 
   const handleChange = (e) => {
     setFormData({
@@ -45,10 +47,12 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store JWT token in cookies
-        Cookies.set('jwt', data.token, { expires: 1 }); // Expires in 1 day
         setSnackbarMessage('Login successful!');
         setSnackbarSeverity('success');
+        
+        // Redirect to the 'notepage' after successful login
+        router.push('/notepage'); 
+
       } else {
         setSnackbarMessage(data.error || 'Invalid credentials');
         setSnackbarSeverity('error');
@@ -116,9 +120,9 @@ export default function Login() {
           style: { 
             backgroundColor: snackbarSeverity === 'success' ? 'green' : 'red',
             position: 'fixed',  // Fixes the Snackbar position relative to the viewport
-            bottom: '-180px',  // Adds spacing from the bottom
-            left: '-920px',    // Adds spacing from the left
-            zIndex: 9999,    // Makes sure it sits on top of other elements
+            top: '480px',      // Adds a small spacing from the bottom
+            right: '1200px',        // Adds a small spacing from the left
+            zIndex: 9999,        // Makes sure it sits on top of other elements
           },
         }}
       />

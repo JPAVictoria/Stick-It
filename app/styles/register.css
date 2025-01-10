@@ -21,7 +21,7 @@ body {
 
 .wrapper{
 
-  animation: slideUp 2s ease-in-out forwards;
+  animation: slideUp 1s ease-in-out forwards;
   margin-top: 5%;
   margin-left: auto;
   margin-right: auto;

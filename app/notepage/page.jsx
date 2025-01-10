@@ -2,10 +2,23 @@
 import { useState, useEffect } from 'react';
 import Header from '@/app/components/Header';
 import Note from '@/app/components/Note';
-import Modal from '@/app/components/Modal'; // Import Modal component
-import DeleteDialog from '@/app/components/DeleteDialog'; // Import DeleteDialog component
+import Modal from '@/app/components/Modal';
+import DeleteDialog from '@/app/components/DeleteDialog';
 import Popup from '@/app/components/Popup';
 import '@/app/NotePage/styles.css';
+
+const getTokenFromCookies = () => {
+  const name = 'jwt=';
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const ca = decodedCookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i].trim();
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return '';
+};
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
@@ -16,13 +29,30 @@ export default function Home() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [popup, setPopup] = useState({ open: false, message: '', backgroundColor: '' });
 
-  // Fetch notes from the API on page load
   useEffect(() => {
     const fetchNotes = async () => {
-      const res = await fetch('/api/notes');
-      if (res.ok) {
-        const data = await res.json();
-        setNotes(data);
+      const token = getTokenFromCookies();
+      if (!token) {
+        console.error('Token is missing');
+        setPopup({ open: true, message: 'Token is missing', backgroundColor: 'red' });
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/notes', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setNotes(data);
+        } else {
+          console.error('Failed to fetch notes:', res.status);
+        }
+      } catch (error) {
+        console.error('Failed to fetch notes:', error);
       }
     };
     fetchNotes();
@@ -49,9 +79,14 @@ export default function Home() {
       return;
     }
 
+    const token = getTokenFromCookies();
+
     const res = await fetch(`/api/notes/${selectedNote.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(newNote),
     });
 
@@ -63,15 +98,19 @@ export default function Home() {
       closeModal();
       setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
     } else {
-      // Handle error
+      console.error('Failed to update note:', res.status);
     }
   };
 
   const handleSave = async () => {
+    const token = getTokenFromCookies();
 
     const res = await fetch('/api/notes', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(newNote),
     });
 
@@ -80,13 +119,20 @@ export default function Home() {
       setNotes((prevNotes) => [addedNote, ...prevNotes]);
       closeModal();
       setPopup({ open: true, message: 'Note pasted successfully', backgroundColor: 'green' });
+    } else {
+      console.error('Failed to save note:', res.status);
     }
   };
 
   const handleDeleteNote = async () => {
+    const token = getTokenFromCookies();
+
     const res = await fetch(`/api/notes/${selectedNote.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ deleted: true }),
     });
 
@@ -95,18 +141,18 @@ export default function Home() {
       setShowDeleteDialog(false);
       setSelectedNote(null);
       setPopup({ open: true, message: 'Note deleted successfully', backgroundColor: 'green' });
-    } 
+    } else {
+      console.error('Failed to delete note:', res.status);
+    }
   };
 
-  const closePopup = () => setPopup({ open: false});
+  const closePopup = () => setPopup({ open: false });
 
   return (
     <div>
       <Header setNotes={setNotes} setPopup={setPopup} />
       <div
-        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6 mt-10 rounded-lg shadow-md ${
-          isDragging ? 'dragging-container' : ''
-        }`}
+        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
       >
         {notes.length === 0 ? (
           <p className="text-[#D1D7E0]">No notes available.</p>

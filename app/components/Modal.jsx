@@ -57,7 +57,7 @@ export default function Modal({ open, handleClose, setNewNote, handleSave, note,
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={() => { handleClose(); resetError(); }} sx={{ color: "#383D41" }}>Cancel</Button>
+        <Button onClick={() => { handleClose();}} sx={{ color: "#383D41" }}>Cancel</Button>
         <Button id="save" onClick={handleSubmit} sx={{ color: "#383D41" }}>
           {isEdit ? 'Update' : 'Paste'}
         </Button>
