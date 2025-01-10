@@ -16,7 +16,7 @@ export default function Instructions() {
         <ol className="list">
           <li className="slide-right delay-1">To add a note, simply click the button "<b>Add a note</b>".</li>
           <br></br>
-          <li className="slide-right delay-2">To edit an existing note, simply <b>click</b> a note.</li>
+          <li className="slide-right delay-2">To edit an existing note, <b>click</b> the note itself.</li>
           <br></br>
           <li className="slide-right delay-3">To delete a note, <b>drag</b> a note to the garbage bin located in the upper right side of the screen.</li>
         </ol>
