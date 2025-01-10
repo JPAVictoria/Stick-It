@@ -5,6 +5,7 @@ import Image from 'next/image';
 import garbageClose from '../icons/garbageClose.png';
 import garbageOpen from '../icons/garbageOpen.png';
 import Modal from '@/app/components/Modal';
+import Loader from '@/app/components/Loader'; // Import the loader component
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 
 const getTokenFromCookies = () => {
@@ -29,6 +30,7 @@ export default function Header({ setNotes, setPopup }) {
   const [newNote, setNewNote] = useState({ title: '', description: '' });
   const [selectedNote, setSelectedNote] = useState(null);
   const [isGarbageHovered, setIsGarbageHovered] = useState(false);
+  const [loading, setLoading] = useState(false); // Add a loading state
   const router = useRouter(); // Initialize useRouter for navigation
 
   const handleOpen = (note = null) => {
@@ -49,11 +51,13 @@ export default function Header({ setNotes, setPopup }) {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     const token = getTokenFromCookies();
   
     if (!token) {
       console.error('Token is missing');
       setPopup({ open: true, message: 'Token is missing', backgroundColor: 'red' });
+      setLoading(false);
       return;
     }
   
@@ -62,44 +66,49 @@ export default function Header({ setNotes, setPopup }) {
       Authorization: `Bearer ${token}`,
     };
   
-    if (isEdit) {
-      const res = await fetch(`/api/notes/${selectedNote.id}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          title: newNote.title,
-          description: newNote.description,
-        }),
-      });
+    try {
+      if (isEdit) {
+        const res = await fetch(`/api/notes/${selectedNote.id}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({
+            title: newNote.title,
+            description: newNote.description,
+          }),
+        });
   
-      if (res.ok) {
-        const updatedNote = await res.json();
-        setNotes((prevNotes) =>
-          prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
-        );
-        setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
-        handleClose();
+        if (res.ok) {
+          const updatedNote = await res.json();
+          setNotes((prevNotes) =>
+            prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
+          );
+          setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
+          handleClose();
+        } else {
+          console.error('Failed to update note:', res.status);
+        }
       } else {
-        console.error('Failed to update note:', res.status);
-      }
-    } else {
-      const res = await fetch('/api/notes', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(newNote),
-      });
+        const res = await fetch('/api/notes', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(newNote),
+        });
   
-      if (res.ok) {
-        const addedNote = await res.json();
-        setNotes((prevNotes) => [addedNote, ...prevNotes]);
-        setPopup({ open: true, message: 'Note pasted successfully', backgroundColor: 'green' });
-        handleClose();
-      } else {
-        console.error('Failed to save note:', res.status);
+        if (res.ok) {
+          const addedNote = await res.json();
+          setNotes((prevNotes) => [addedNote, ...prevNotes]);
+          setPopup({ open: true, message: 'Note pasted successfully', backgroundColor: 'green' });
+          handleClose();
+        } else {
+          console.error('Failed to save note:', res.status);
+        }
       }
+    } catch (error) {
+      console.error('Error during save operation:', error);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   const handleDragOverGarbage = (e) => {
     e.preventDefault();
@@ -117,6 +126,7 @@ export default function Header({ setNotes, setPopup }) {
   };
 
   const handleLogout = async () => {
+    setLoading(true);
     try {
       const res = await fetch('/api/logout', {
         method: 'POST',
@@ -135,9 +145,16 @@ export default function Header({ setNotes, setPopup }) {
         setPopup({ open: true, message: 'Failed to log out', backgroundColor: 'red' });
       }
     } catch (error) {
+      console.error('An error occurred during logout:', error);
       setPopup({ open: true, message: 'An error occurred during logout', backgroundColor: 'red' });
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="w-full">

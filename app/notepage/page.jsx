@@ -5,6 +5,7 @@ import Note from '@/app/components/Note';
 import Modal from '@/app/components/Modal';
 import DeleteDialog from '@/app/components/DeleteDialog';
 import Popup from '@/app/components/Popup';
+import Loader from '@/app/components/Loader'; // Import the loader component
 import '@/app/NotePage/styles.css';
 
 const getTokenFromCookies = () => {
@@ -28,6 +29,7 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [popup, setPopup] = useState({ open: false, message: '', backgroundColor: '' });
+  const [loading, setLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -35,6 +37,7 @@ export default function Home() {
       if (!token) {
         console.error('Token is missing');
         setPopup({ open: true, message: 'Token is missing', backgroundColor: 'red' });
+        setLoading(false);
         return;
       }
 
@@ -53,6 +56,8 @@ export default function Home() {
         }
       } catch (error) {
         console.error('Failed to fetch notes:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchNotes();
@@ -147,6 +152,10 @@ export default function Home() {
   };
 
   const closePopup = () => setPopup({ open: false });
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div>

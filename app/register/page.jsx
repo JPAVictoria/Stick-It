@@ -6,6 +6,7 @@ import '@/app/styles/register.css';
 import Navbar from '@/app/components/Navbar';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
+import Loader from '@/app/components/Loader'; // Import the loader component
 
 function SlideTransition(props) {
   return <Slide {...props} direction="up" />;
@@ -24,6 +25,7 @@ export default function Register() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+  const [loading, setLoading] = useState(false); // Add a loading state
 
   const handleChange = (e) => {
     setFormData({
@@ -36,6 +38,7 @@ export default function Register() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setLoading(true); // Set loading to true
 
     const { name, email, password, confirmPassword } = formData;
 
@@ -44,6 +47,7 @@ export default function Register() {
       setSnackbarMessage('Passwords do not match.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
+      setLoading(false); // Set loading to false
       return;
     }
 
@@ -80,12 +84,18 @@ export default function Register() {
       setSnackbarMessage('Failed to connect to the server.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
+    } finally {
+      setLoading(false); // Set loading to false after the request is completed
     }
   };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div>

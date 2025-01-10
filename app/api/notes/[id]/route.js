@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'; // For JWT verification
+import jwt from 'jsonwebtoken';
 import { prisma } from '@/app/lib/prisma';
 
 // Function to verify JWT token
@@ -6,6 +6,7 @@ const verifyToken = (token) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET); // Verify and decode the JWT token
   } catch (error) {
+    console.error('Token verification failed:', error);
     return null; // Return null if the token is invalid
   }
 };
@@ -44,13 +45,13 @@ export async function GET(req) {
     }
 
     // Ensure the logged-in user can only view their own notes
-    if (note.userId !== decodedToken.userId) {
+    if (note.userId !== decodedToken.id) { // Use consistent extraction of userId
       return new Response(JSON.stringify({ error: 'Forbidden: You cannot view someone else\'s note' }), { status: 403 });
     }
 
     return new Response(JSON.stringify(note), { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching note by ID:', error);
     return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), { status: 500 });
   }
 }
@@ -95,7 +96,7 @@ export async function PUT(req) {
     }
 
     // Ensure the logged-in user can only edit their own notes
-    if (note.userId !== decodedToken.userId) {
+    if (note.userId !== decodedToken.id) { // Use consistent extraction of userId
       return new Response(JSON.stringify({ error: 'Forbidden: You cannot edit someone else\'s note' }), { status: 403 });
     }
 
@@ -111,7 +112,7 @@ export async function PUT(req) {
 
     return new Response(JSON.stringify(updatedNote), { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error('Error updating note by ID:', error);
     return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), { status: 500 });
   }
 }
