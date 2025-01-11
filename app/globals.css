@@ -196,7 +196,7 @@ svg {
 
 .login-alignment{
   margin-left: 25%;
-  margin-top: 18%;
+  margin-top: 15%;
 
 }
 
@@ -240,6 +240,7 @@ svg {
   left: 0;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   background: #222629;
 }
 .background li {

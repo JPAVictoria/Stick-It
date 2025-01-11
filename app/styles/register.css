@@ -1,23 +1,11 @@
 
 body {
     background-color: #222629;
-    overflow: hidden;
   }
 
-  @keyframes slideUp {
-    0% {
-      transform: translateY(50%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
 
 .wrapper{
 
-  animation: slideUp 1s ease-in-out forwards;
   margin-top: 5%;
   margin-left: auto;
   margin-right: auto;

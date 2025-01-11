@@ -51,6 +51,15 @@ export default function Register() {
       return;
     }
 
+    // Password length validation
+    if (password.length < 8) {
+      setSnackbarMessage('Password must be at least 8 characters long.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      setLoading(false); // Set loading to false
+      return;
+    }
+
     try {
       const response = await fetch('/api/signup', {
         method: 'POST',
@@ -94,7 +103,7 @@ export default function Register() {
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader />; // Show loader during the registration process
   }
 
   return (

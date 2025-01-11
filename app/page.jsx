@@ -29,7 +29,7 @@ export default function Home() {
             <li></li>
           </ul>
         </div>
-        <div className='alignment grid grid-cols-1 md:grid-cols-2'>
+        <div className='alignment grid grid-cols-1 md:grid-cols-2 mt-10'>
           <div className='text-content '>
             <h1>Paste Now!</h1>
             <p>Welcome to STICK IT — a simple sticky note project to practice creating, reading, updating, and deleting (CRUD) functionality. Built with Next.js, React, Tailwind, REST APIs, and Prisma, this web application lets you create and manage notes, making it easy 
