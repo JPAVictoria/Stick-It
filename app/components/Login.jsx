@@ -11,6 +11,7 @@ export default function Login() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false); // Add loading state
   const { showSnackbar } = useSnackbar(); // Access the global snackbar
   const router = useRouter();
 
@@ -25,6 +26,7 @@ export default function Login() {
     e.preventDefault();
 
     const { email, password } = formData;
+    setLoading(true); // Set loading to true when the form is submitted
 
     try {
       const response = await fetch("/api/login", {
@@ -46,6 +48,7 @@ export default function Login() {
     } catch (err) {
       showSnackbar("Failed to connect to the server.", "error");
     } finally {
+      setLoading(false); // Set loading to false once the request is complete
       setFormData({
         email: "",
         password: "",
@@ -80,10 +83,17 @@ export default function Login() {
           onChange={handleChange}
         />
 
-        <button type="submit" className="loginbutton">
-          Log In
+        <button type="submit" className="loginbutton" disabled={loading}>
+          {loading ? "Logging in..." : "Log In"} {/* Display loading text */}
         </button>
       </form>
+
+      {/* Show loader when the form is submitting */}
+      {loading && (
+        <div className="loader">
+          <div className="spinner"></div>
+        </div>
+      )}
     </div>
   );
 }
