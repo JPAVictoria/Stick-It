@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
 export default function Modal({ open, handleClose, setNewNote, handleSave, note, isEdit, resetError }) {
   const [showError, setShowError] = useState({ title: false, description: false });
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleChange = (e) => {
     setNewNote((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -14,12 +15,15 @@ export default function Modal({ open, handleClose, setNewNote, handleSave, note,
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!note.title || !note.description) {
       setShowError({ title: !note.title, description: !note.description }); // Show specific errors
       return;
     }
-    handleSave();
+
+    setLoading(true); // Set loading true when saving the note
+    await handleSave(); // Wait for the save to complete
+    setLoading(false); // Set loading false after save
   };
 
   return (
@@ -57,9 +61,16 @@ export default function Modal({ open, handleClose, setNewNote, handleSave, note,
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={() => { handleClose();}} sx={{ color: "#383D41" }}>Cancel</Button>
-        <Button id="save" onClick={handleSubmit} sx={{ color: "#383D41" }}>
-          {isEdit ? 'Update' : 'Paste'}
+        <Button onClick={() => { handleClose();}} sx={{ color: "#383D41" }} disabled={loading}>
+          Cancel
+        </Button>
+        <Button 
+          id="save" 
+          onClick={handleSubmit} 
+          sx={{ color: "#383D41" }} 
+          disabled={loading} // Disable the button while loading
+        >
+          {loading ? (isEdit ? 'Updating...' : 'Saving...') : (isEdit ? 'Update' : 'Paste')} {/* Change button text while loading */}
         </Button>
       </DialogActions>
     </Dialog>
