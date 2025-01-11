@@ -30,7 +30,8 @@ export default function Header({ setNotes, setPopup }) {
   const [newNote, setNewNote] = useState({ title: '', description: '' });
   const [selectedNote, setSelectedNote] = useState(null);
   const [isGarbageHovered, setIsGarbageHovered] = useState(false);
-  const [loading, setLoading] = useState(false); // Add a loading state for logout
+  const [loading, setLoading] = useState(false); // General loading state for saving notes
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // New state for logout loading
   const router = useRouter(); // Initialize useRouter for navigation
 
   const handleOpen = (note = null) => {
@@ -51,7 +52,7 @@ export default function Header({ setNotes, setPopup }) {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoading(true); // Set loading for saving notes
     const token = getTokenFromCookies();
   
     if (!token) {
@@ -106,7 +107,7 @@ export default function Header({ setNotes, setPopup }) {
     } catch (error) {
       console.error('Error during save operation:', error);
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset loading state after saving note
     }
   };
 
@@ -126,7 +127,7 @@ export default function Header({ setNotes, setPopup }) {
   };
 
   const handleLogout = async () => {
-    setLoading(true); // Set loading to true when logging out
+    setIsLoggingOut(true); // Set loading to true when logging out
     try {
       const res = await fetch('/api/logout', {
         method: 'POST',
@@ -148,18 +149,16 @@ export default function Header({ setNotes, setPopup }) {
       console.error('An error occurred during logout:', error);
       setPopup({ open: true, message: 'An error occurred during logout', backgroundColor: 'red' });
     } finally {
-      setLoading(false); // Set loading back to false after logout process completes
+      setIsLoggingOut(false); // Set loading back to false after logout process completes
     }
   };
 
   return (
     <div className="w-full">
       {/* Show loader only when logging out */}
-      {loading && (
-        <Loader />
-      )}
+      {isLoggingOut && <Loader />}
 
-      {!loading && (
+      {!isLoggingOut && (
         <div className="header-container flex justify-between items-center w-full px-6">
           <div className="flex flex-col items-center text-center w-full">
             <h1 className="font-bold text-xl text-paragraph-color md:text-5xl pt-7 pb-2 text-[#D1D7E0] animate__animated animate__slideInRight">
