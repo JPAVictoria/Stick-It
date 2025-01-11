@@ -155,63 +155,59 @@ export default function Header({ setNotes, setPopup }) {
   return (
     <div className="w-full">
       {loading && (
-        <div className="blurred-background">
           <Loader />
-        </div>
       )}
-      {!loading && (
-        <div className="header-container flex justify-between items-center w-full px-6">
-          <div className="flex flex-col items-center text-center w-full">
-            <h1 className="font-bold text-xl text-paragraph-color md:text-5xl pt-7 pb-2 text-[#D1D7E0] animate__animated animate__slideInRight">
-              STICK IT
-            </h1>
-
-            {/* Add note button */}
-            <button
-              className="pt-2 text-lg text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100 mb-2"
-              onClick={() => handleOpen()}
-            >
-              Add note
-            </button>
-
-            {/* Logout button */}
-            <button
-              className="text-sm pt-1 text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100"
-              onClick={handleLogout}
-            >
-              Logout?
-            </button>
-          </div>
-
-          {/* Garbage container */}
-          <div
-            className="garbage-container pt-7"
-            onDragOver={handleDragOverGarbage}
-            onDragLeave={handleDragLeaveGarbage}
-            onDrop={handleDropOnGarbage}
-            style={{
-              width: '150px',
-              height: '150px',
-              borderWidth: '2px',
-              borderStyle: 'dashed',
-              borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
-              borderRadius: '10px',
-              transition: 'border-color 0.2s ease-in-out',
-            }}
-          >
-            <Image
-              src={isGarbageHovered ? garbageOpen : garbageClose}
-              alt="garbageIcon"
-              className="garbage-size"
-              width={100}
-              height={100}
-            />
-          </div>
-        </div>
-      )}
-
       {!loading && (
         <>
+          <div className="header-container flex justify-between items-center w-full px-6">
+            <div className="flex flex-col items-center text-center w-full">
+              <h1 className="font-bold text-xl text-paragraph-color md:text-5xl pt-7 pb-2 text-[#D1D7E0] animate__animated animate__slideInRight">
+                STICK IT
+              </h1>
+
+              {/* Add note button */}
+              <button
+                className="pt-2 text-lg text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100 mb-2"
+                onClick={() => handleOpen()}
+              >
+                Add note
+              </button>
+
+              {/* Logout button */}
+              <button
+                className="text-sm pt-1 text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100"
+                onClick={handleLogout}
+              >
+                Logout?
+              </button>
+            </div>
+
+            {/* Garbage container */}
+            <div
+              className="garbage-container pt-7"
+              onDragOver={handleDragOverGarbage}
+              onDragLeave={handleDragLeaveGarbage}
+              onDrop={handleDropOnGarbage}
+              style={{
+                width: '150px',
+                height: '150px',
+                borderWidth: '2px',
+                borderStyle: 'dashed',
+                borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
+                borderRadius: '10px',
+                transition: 'border-color 0.2s ease-in-out',
+              }}
+            >
+              <Image
+                src={isGarbageHovered ? garbageOpen : garbageClose}
+                alt="garbageIcon"
+                className="garbage-size"
+                width={100}
+                height={100}
+              />
+            </div>
+          </div>
+
           <hr className="w-full border-t-2 border-gray-400 my-4" />
 
           <Modal

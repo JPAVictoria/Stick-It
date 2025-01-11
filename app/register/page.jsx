@@ -100,6 +100,7 @@ export default function Register() {
   return (
     <div>
       <Navbar />
+      <br></br>
       <div className="alignment-reg">
         <div className="wrapper">
           <h2>Registration</h2>

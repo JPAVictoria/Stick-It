@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
         <title>Next.js CRUD | Stick it</title>
       </head>
       <body>
-        {children}
+          {children}
       </body>
     </html>
   );

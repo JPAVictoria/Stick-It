@@ -1,25 +1,18 @@
 "use client";
 
-import { useState } from 'react';
-import Snackbar from '@mui/material/Snackbar';
-import Slide from '@mui/material/Slide';
-import { useRouter } from 'next/navigation'; // Import useRouter for page navigation
-
-function SlideTransition(props) {
-  return <Slide {...props} direction="up" />;
-}
+import "@/app/styles/login.css";
+import { useState } from "react";
+import { useSnackbar } from "@/app/components/Snackbar.jsx"; // Access the global snackbar
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
-
-  const router = useRouter(); // Initialize useRouter for navigation
+  const { showSnackbar } = useSnackbar(); // Access the global snackbar
+  const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({
@@ -32,14 +25,12 @@ export default function Login() {
     e.preventDefault();
 
     const { email, password } = formData;
-    setSnackbarMessage('');
-    setSnackbarSeverity('success'); // Reset to default state before making the request.
 
     try {
-      const response = await fetch('/api/login', { // API endpoint to authenticate user
-        method: 'POST',
+      const response = await fetch("/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -47,31 +38,19 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        setSnackbarMessage('Login successful!');
-        setSnackbarSeverity('success');
-        
-        // Redirect to the 'notepage' after successful login
-        router.push('/notepage'); 
-
+        showSnackbar("Login successful!", "success");
+        router.push("/notepage");
       } else {
-        setSnackbarMessage(data.error || 'Invalid credentials');
-        setSnackbarSeverity('error');
+        showSnackbar(data.error || "Invalid credentials", "error");
       }
     } catch (err) {
-      setSnackbarMessage('Failed to connect to the server.');
-      setSnackbarSeverity('error');
+      showSnackbar("Failed to connect to the server.", "error");
     } finally {
-      // Reset form data after handling the response
       setFormData({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
       });
-      setSnackbarOpen(true); // Always open the snackbar, even in the case of an error
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -101,31 +80,10 @@ export default function Login() {
           onChange={handleChange}
         />
 
-        <button type="submit" className="loginbutton">Log In</button>
+        <button type="submit" className="loginbutton">
+          Log In
+        </button>
       </form>
-
-      {/* Snackbar for displaying success or error messages */}
-      <Snackbar
-        open={snackbarOpen}
-        onClose={handleCloseSnackbar}
-        TransitionComponent={SlideTransition}
-        message={snackbarMessage}
-        key={SlideTransition.name}
-        autoHideDuration={2000}
-        anchorOrigin={{
-          vertical: 'bottom',  // Align to the bottom of the screen
-          horizontal: 'left',  // Align to the left of the screen
-        }}
-        ContentProps={{
-          style: { 
-            backgroundColor: snackbarSeverity === 'success' ? 'green' : 'red',
-            position: 'fixed',  // Fixes the Snackbar position relative to the viewport
-            top: '480px',      // Adds a small spacing from the bottom
-            right: '1200px',        // Adds a small spacing from the left
-            zIndex: 9999,        // Makes sure it sits on top of other elements
-          },
-        }}
-      />
     </div>
   );
 }
