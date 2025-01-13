@@ -102,6 +102,14 @@ export default function Home() {
       );
       closeModal();
       setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
+    } else if (res.status === 401 || res.status === 403) {
+      // Token expired or invalid, trigger logout
+      document.cookie = 'jwt=; path=/; max-age=0'; // Clear the JWT cookie
+      setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
+      setTimeout(() => {
+        // Redirect to login page or reset state
+        window.location.href = '/';
+      }, 2000);
     } else {
       console.error('Failed to update note:', res.status);
     }
@@ -146,6 +154,14 @@ export default function Home() {
       setShowDeleteDialog(false);
       setSelectedNote(null);
       setPopup({ open: true, message: 'Note deleted successfully', backgroundColor: 'green' });
+    } else if (res.status === 401 || res.status === 403) {
+      // Token expired or invalid, trigger logout
+      document.cookie = 'jwt=; path=/; max-age=0'; // Clear the JWT cookie
+      setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
+      setTimeout(() => {
+        // Redirect to login page or reset state
+        window.location.href = '/'; // Redirect to the login page
+      }, 2000);
     } else {
       console.error('Failed to delete note:', res.status);
     }

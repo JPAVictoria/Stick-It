@@ -10,17 +10,14 @@ import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 
 const getTokenFromCookies = () => {
   const name = 'jwt=';
-  console.log('document.cookie:', document.cookie); // Debugging statement
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i].trim();
     if (c.indexOf(name) === 0) {
-      console.log('JWT Token Found:', c.substring(name.length, c.length)); // Debugging statement
       return c.substring(name.length, c.length);
     }
   }
-  console.log('JWT Token Not Found'); // Debugging statement
   return '';
 };
 
@@ -32,6 +29,7 @@ export default function Header({ setNotes, setPopup }) {
   const [isGarbageHovered, setIsGarbageHovered] = useState(false);
   const [loading, setLoading] = useState(false); // General loading state for saving notes
   const [isLoggingOut, setIsLoggingOut] = useState(false); // New state for logout loading
+  const [isAutomaticLogout, setIsAutomaticLogout] = useState(false); // Track automatic logout state
   const router = useRouter(); // Initialize useRouter for navigation
 
   const handleOpen = (note = null) => {
@@ -54,19 +52,20 @@ export default function Header({ setNotes, setPopup }) {
   const handleSave = async () => {
     setLoading(true); // Set loading for saving notes
     const token = getTokenFromCookies();
-  
+
     if (!token) {
-      console.error('Token is missing');
-      setPopup({ open: true, message: 'Token is missing', backgroundColor: 'red' });
+      // Token missing or invalid
+      setPopup({ open: true, message: 'Token is missing or expired. Logging out...', backgroundColor: 'red' });
+      logout(true); // Pass `true` to indicate automatic logout
       setLoading(false);
       return;
     }
-  
+
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     };
-  
+
     try {
       if (isEdit) {
         const res = await fetch(`/api/notes/${selectedNote.id}`, {
@@ -77,7 +76,7 @@ export default function Header({ setNotes, setPopup }) {
             description: newNote.description,
           }),
         });
-  
+
         if (res.ok) {
           const updatedNote = await res.json();
           setNotes((prevNotes) =>
@@ -86,7 +85,13 @@ export default function Header({ setNotes, setPopup }) {
           setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
           handleClose();
         } else {
-          console.error('Failed to update note:', res.status);
+          // Handle unauthorized status (token expired or invalid)
+          if (res.status === 401) {
+            setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
+            logout(true); // Call with `true` for automatic logout
+          } else {
+            setPopup({ open: true, message: 'Failed to update note.', backgroundColor: 'red' });
+          }
         }
       } else {
         const res = await fetch('/api/notes', {
@@ -94,18 +99,26 @@ export default function Header({ setNotes, setPopup }) {
           headers,
           body: JSON.stringify(newNote),
         });
-  
+
         if (res.ok) {
           const addedNote = await res.json();
           setNotes((prevNotes) => [addedNote, ...prevNotes]);
           setPopup({ open: true, message: 'Note pasted successfully', backgroundColor: 'green' });
           handleClose();
         } else {
-          console.error('Failed to save note:', res.status);
+          // Handle unauthorized status (token expired or invalid)
+          if (res.status === 401) {
+            setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
+            logout(true); // Call with `true` for automatic logout
+          } else {
+            setPopup({ open: true, message: 'Failed to save note.', backgroundColor: 'red' });
+          }
         }
       }
     } catch (error) {
-      console.error('Error during save operation:', error);
+      // Gracefully handle expected errors without logging to the console
+      console.log('Error during save operation:', error);  // Only log if necessary
+      setPopup({ open: true, message: 'An error occurred while saving the note.', backgroundColor: 'red' });
     } finally {
       setLoading(false); // Reset loading state after saving note
     }
@@ -126,8 +139,10 @@ export default function Header({ setNotes, setPopup }) {
     // Trigger deletion logic here
   };
 
-  const handleLogout = async () => {
+  const handleLogout = async (isAutomatic = false) => {
     setIsLoggingOut(true); // Set loading to true when logging out
+    setIsAutomaticLogout(isAutomatic); // Track if logout is automatic
+
     try {
       const res = await fetch('/api/logout', {
         method: 'POST',
@@ -141,7 +156,9 @@ export default function Header({ setNotes, setPopup }) {
         document.cookie = 'jwt=; Path=/; Max-Age=0';
         // Redirect to the home page after successful logout
         router.push('/');
-        setPopup({ open: true, message: 'Logged out successfully', backgroundColor: 'green' });
+        if (!isAutomatic) {
+          setPopup({ open: true, message: 'Logged out successfully', backgroundColor: 'green' });
+        }
       } else {
         setPopup({ open: true, message: 'Failed to log out', backgroundColor: 'red' });
       }
@@ -151,6 +168,11 @@ export default function Header({ setNotes, setPopup }) {
     } finally {
       setIsLoggingOut(false); // Set loading back to false after logout process completes
     }
+  };
+
+  const logout = (isAutomatic = false) => {
+    // Log the user out automatically if the token is missing or invalid
+    handleLogout(isAutomatic); // Call the logout function that removes the cookie and redirects
   };
 
   return (
@@ -176,7 +198,7 @@ export default function Header({ setNotes, setPopup }) {
             {/* Logout button */}
             <button
               className="text-sm pt-1 text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100"
-              onClick={handleLogout}
+              onClick={() => handleLogout(false)} // Pass false to indicate manual logout
             >
               Logout?
             </button>
