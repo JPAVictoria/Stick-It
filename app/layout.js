@@ -1,17 +1,14 @@
 "use client";
 import "./globals.css";
 
-
 export default function RootLayout({ children }) {
-
   return (
     <html lang="en">
       <head>
-        <title>Next.js CRUD | Stick it</title>
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <title>Stick it | CRUD Next.js</title>
       </head>
-      <body>
-          {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
