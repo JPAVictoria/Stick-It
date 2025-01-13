@@ -35,33 +35,32 @@ export default function Home() {
     const fetchNotes = async () => {
       const token = getTokenFromCookies();
       if (!token) {
-        console.error('Token is missing');
-        setPopup({ open: true, message: 'Token is missing', backgroundColor: 'red' });
-        setLoading(false);
+        setPopup({ open: true, message: 'Session expired. Redirecting...', backgroundColor: 'red' });
+        setTimeout(() => window.location.href = '/', 2000);
         return;
       }
-
+  
       try {
         const res = await fetch('/api/notes', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         if (res.ok) {
           const data = await res.json();
           setNotes(data);
-        } else {
-          console.error('Failed to fetch notes:', res.status);
+        } else if (res.status === 401) {
+          setPopup({ open: true, message: 'Session expired. Redirecting...', backgroundColor: 'red' });
+          setTimeout(() => window.location.href = '/', 1000);
         }
-      } catch (error) {
-        console.error('Failed to fetch notes:', error);
+      } catch (err) {
+        console.error('Failed to fetch notes:', err);
       } finally {
         setLoading(false);
       }
     };
     fetchNotes();
   }, []);
+  
 
   const handleNoteClick = (note) => {
     setSelectedNote(note);
