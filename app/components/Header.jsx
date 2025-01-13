@@ -157,7 +157,6 @@ export default function Header({ setNotes, setPopup }) {
         // Redirect to the home page after successful logout
         router.push('/');
         if (!isAutomatic) {
-          setPopup({ open: true, message: 'Logged out successfully', backgroundColor: 'green' });
         }
       } else {
         setPopup({ open: true, message: 'Failed to log out', backgroundColor: 'red' });

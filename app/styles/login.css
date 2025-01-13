@@ -53,9 +53,15 @@ label {
   cursor: pointer;
 }
 
-.loginbutton:hover {
-  opacity: 80%;
+.loginbutton:disabled {
+  background-color: rgba(255, 255, 255, 0.5); 
+  color: #b3b3b3; 
+  cursor: not-allowed; 
+  pointer-events: none; 
 }
+
+
+
 
 
 @media (max-width: 400px) {
@@ -83,3 +89,5 @@ label {
     padding: 10px 0; 
   }
 }
+
+
