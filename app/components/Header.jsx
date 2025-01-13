@@ -140,34 +140,35 @@ export default function Header({ setNotes, setPopup }) {
   };
 
   const handleLogout = async (isAutomatic = false) => {
-    setIsLoggingOut(true); // Set loading to true when logging out
-    setIsAutomaticLogout(isAutomatic); // Track if logout is automatic
-
+    setIsLoggingOut(true); // Show the loader immediately
+  
     try {
+      // Call the API to log out
       const res = await fetch('/api/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (res.ok) {
-        // Remove JWT token from cookies
+        // Remove the JWT token from cookies
         document.cookie = 'jwt=; Path=/; Max-Age=0';
-        // Redirect to the home page after successful logout
-        router.push('/');
-        if (!isAutomatic) {
-        }
+  
+        // Redirect to the main page after successful logout
+        router.replace('/'); // Use `replace` to avoid navigation history issues
       } else {
-        setPopup({ open: true, message: 'Failed to log out', backgroundColor: 'red' });
+        console.error('Failed to log out');
       }
     } catch (error) {
       console.error('An error occurred during logout:', error);
-      setPopup({ open: true, message: 'An error occurred during logout', backgroundColor: 'red' });
     } finally {
-      setIsLoggingOut(false); // Set loading back to false after logout process completes
+      // Avoid setting state after navigation to prevent unnecessary re-renders
+      setTimeout(() => setIsLoggingOut(false), 100); // Optional delay for smooth transition
     }
   };
+  
+  
 
   const logout = (isAutomatic = false) => {
     // Log the user out automatically if the token is missing or invalid
