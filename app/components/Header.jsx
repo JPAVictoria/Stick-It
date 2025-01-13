@@ -158,7 +158,7 @@ export default function Header({ setNotes, setPopup }) {
         // Redirect to the main page after successful logout
         router.replace('/'); // Use `replace` to avoid navigation history issues
       } else {
-        console.error('Failed to log out');
+        console.error('Denied');
       }
     } catch (error) {
       console.error('An error occurred during logout:', error);
