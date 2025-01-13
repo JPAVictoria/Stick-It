@@ -1,4 +1,4 @@
-import '@/app/globals.css';
+"use client";
 
 import React from 'react';
 // components/Loader.jsx

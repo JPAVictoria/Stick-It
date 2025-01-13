@@ -1,41 +1,33 @@
 "use client";
 
-import '@/app/globals.css';
 import Link from "next/link";
 import { useState } from "react";
 
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
-export default function Navbar(){
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
+  const handleHardNavigation = (url) => {
+    window.location.href = url; // This performs a hard navigation
+  };
 
-    const [menuOpen, setMenuOpen] = useState(false);
-
-    const toggleMenu = () => {
-      setMenuOpen(!menuOpen);
-    };
-    
-    
-    
-      return (
-        <div>
-    
-        <div className="navbar mt-10">
-              <div className="logo">STICK IT</div>
-              <div
-                className="menu-icon"
-                onClick={toggleMenu}
-              >
-                ☰
-              </div>
-              <div className= {`links ${menuOpen ? "active" : "mr-32"}`}>
-                <Link href="/">Home</Link>
-                <Link href="/instructions">Instructions</Link>
-                <Link href="/register">Register</Link>
-              </div>
-            </div>
+  return (
+    <div>
+      <div className="navbar mt-10">
+        <div className="logo">STICK IT</div>
+        <div className="menu-icon" onClick={toggleMenu} style={{ cursor: "pointer" }}>
+          ☰
         </div>
-
-            );
-
-
+        <div className={`links ${menuOpen ? "active" : "mr-32"}`}>
+          {/* Replace Link components with hard navigation */}
+          <a style={{ cursor: "pointer" }} onClick={() => handleHardNavigation("/")}>Home</a>
+          <a style={{ cursor: "pointer" }} onClick={() => handleHardNavigation("/instructions")}>Instructions</a>
+          <a style={{ cursor: "pointer" }} onClick={() => handleHardNavigation("/register")}>Register</a>
+        </div>
+      </div>
+    </div>
+  );
 }

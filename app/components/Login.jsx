@@ -13,7 +13,6 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false); // Add loading state
   const { showSnackbar } = useSnackbar(); // Access the global snackbar
-  const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({
@@ -41,7 +40,9 @@ export default function Login() {
 
       if (response.ok) {
         showSnackbar("Login successful!", "success");
-        router.push("/notepage");
+
+        // Trigger hard navigation (full page reload)
+        window.location.href = "/notepage"; // This forces a full reload to the new page
       } else {
         showSnackbar(data.error || "Invalid credentials", "error");
       }

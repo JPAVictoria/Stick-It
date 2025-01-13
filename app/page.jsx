@@ -1,5 +1,4 @@
 "use client";
-import '@/app/globals.css';
 import Login from '@/app/components/Login.jsx';
 import Navbar from '@/app/components/Navbar';
 import { SnackbarProvider } from '@/app/components/Snackbar.jsx'; // Import the SnackbarProvider
