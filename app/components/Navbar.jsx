@@ -11,7 +11,7 @@ export default function Navbar() {
   };
 
   const handleHardNavigation = (url) => {
-    window.location.href = url; // This performs a hard navigation
+    window.location.href = url; 
   };
 
   return (

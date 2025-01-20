@@ -211,8 +211,6 @@ export default function Header({ setNotes, setPopup }) {
             onDragLeave={handleDragLeaveGarbage}
             onDrop={handleDropOnGarbage}
             style={{
-              width: '150px',
-              height: '150px',
               borderWidth: '2px',
               borderStyle: 'dashed',
               borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
@@ -224,8 +222,6 @@ export default function Header({ setNotes, setPopup }) {
               src={isGarbageHovered ? garbageOpen : garbageClose}
               alt="garbageIcon"
               className="garbage-size"
-              width={100}
-              height={100}
             />
           </div>
         </div>

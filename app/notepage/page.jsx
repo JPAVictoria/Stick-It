@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from 'react';
 import Header from '@/app/components/Header';
 import Note from '@/app/components/Note';
@@ -7,6 +8,9 @@ import DeleteDialog from '@/app/components/DeleteDialog';
 import Popup from '@/app/components/Popup';
 import Loader from '@/app/components/Loader'; // Import the loader component
 import '@/app/styles/notepage.css';
+import Image from 'next/image';
+import filter2 from '../icons/filter2.png';
+import Filter from '@/app/components/Filter'; // The new filter modal component
 
 const getTokenFromCookies = () => {
   const name = 'jwt=';
@@ -30,6 +34,8 @@ export default function Home() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [popup, setPopup] = useState({ open: false, message: '', backgroundColor: '' });
   const [loading, setLoading] = useState(true); // Add a loading state
+
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Filter modal state
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -60,7 +66,6 @@ export default function Home() {
     };
     fetchNotes();
   }, []);
-  
 
   const handleNoteClick = (note) => {
     setSelectedNote(note);
@@ -168,6 +173,18 @@ export default function Home() {
 
   const closePopup = () => setPopup({ open: false });
 
+  const handleOpenFilterModal = () => setIsFilterModalOpen(true);
+  const handleCloseFilterModal = () => setIsFilterModalOpen(false);
+
+  const handleApplyFilter = () => {
+    console.log('Apply filter logic goes here.');
+    handleCloseFilterModal(); // Close modal after applying filter
+  };
+
+  const handleResetFilter = () => {
+    console.log('Reset filter logic goes here.');
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -175,9 +192,25 @@ export default function Home() {
   return (
     <div>
       <Header setNotes={setNotes} setPopup={setPopup} />
+      
       <div
-        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
+        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
+        p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
+        style={{ position: 'relative' }}
       >
+
+        {notes.length > 0 && (
+          <div className="filter-container">
+            <Image
+              src={filter2}
+              alt="filterIcon"
+              className="filter-icon"
+              width={30}
+              onClick={handleOpenFilterModal} // Open filter modal on click
+            />
+          </div>
+        )}
+
         {notes.length === 0 ? (
           <p className="text-[#D1D7E0]">No notes available.</p>
         ) : (
@@ -220,6 +253,14 @@ export default function Home() {
         message={popup.message}
         backgroundColor={popup.backgroundColor}
         handleClose={closePopup}
+      />
+
+      {/* Filter Modal */}
+      <Filter
+        open={isFilterModalOpen}
+        handleClose={handleCloseFilterModal}
+        handleApplyFilter={handleApplyFilter}
+        handleResetFilter={handleResetFilter}
       />
     </div>
   );

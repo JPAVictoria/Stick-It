@@ -45,7 +45,7 @@ export default function Note({
   };
 
   return (
-    <div className="mt-4 note-container" ref={noteRef} data-id={id}>
+    <div className="mt-8 note-container" ref={noteRef} data-id={id}>
       <div
         onClick={onClick}
         className={`note-storage note-before w-72 h-80 rounded-lg bg-[#383D41] ${isDraggingNote ? 'dragging' : ''}`}
