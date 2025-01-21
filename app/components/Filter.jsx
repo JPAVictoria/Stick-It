@@ -4,14 +4,22 @@ import { useState } from 'react';
 
 export default function Filter({ open, handleClose, handleApplyFilter, handleResetFilter }) {
   const [selectedDate, setSelectedDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
   };
 
-  const handleReset = () => {
-    setSelectedDate(""); // Reset the selected date state
-    handleResetFilter(); // Trigger parent reset logic if needed
+  const handleReset = async () => {
+    setIsLoading(true); // Start loading when resetting
+    await handleResetFilter(); // Trigger the reset filter logic
+    setIsLoading(false); // Stop loading after resetting
+  };
+
+  const handleApply = async () => {
+    setIsLoading(true); // Start loading when applying filter
+    await handleApplyFilter(selectedDate); // Pass selectedDate to parent for applying filter
+    setIsLoading(false); // Stop loading after applying filter
   };
 
   return (
@@ -51,14 +59,15 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
         <Button onClick={handleClose} sx={{ color: "#383D41" }}>
           Close
         </Button>
-        <Button onClick={handleReset} sx={{ color: "#383D41" }}>
-          Reset
+        <Button onClick={handleReset} sx={{ color: "#383D41" }} disabled={isLoading}>
+          {isLoading ? 'Resetting...' : 'Reset'}
         </Button>
         <Button
-          onClick={() => handleApplyFilter(selectedDate)} // Pass selectedDate to parent
+          onClick={handleApply}
           sx={{ color: "#383D41" }}
+          disabled={isLoading}
         >
-          Apply
+          {isLoading ? 'Applying...' : 'Apply'}
         </Button>
       </DialogActions>
     </Dialog>

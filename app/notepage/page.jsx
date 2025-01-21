@@ -35,6 +35,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true); // Add a loading state
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Filter modal state
   const [filterDate, setFilterDate] = useState(''); // Store filter date
+  const [isApplying, setIsApplying] = useState(false); // State for handling apply button loading
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -44,12 +45,12 @@ export default function Home() {
         setTimeout(() => window.location.href = '/', 2000);
         return;
       }
-  
+
       try {
         const res = await fetch(`/api/notes?date=${filterDate}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-  
+
         if (res.ok) {
           const data = await res.json();
           setNotes(data);
@@ -168,15 +169,24 @@ export default function Home() {
   const handleOpenFilterModal = () => setIsFilterModalOpen(true);
   const handleCloseFilterModal = () => setIsFilterModalOpen(false);
 
-  const handleApplyFilter = (date) => {
-    setFilterDate(date);
-    handleCloseFilterModal(); // Close modal after applying filter
+  const handleApplyFilter = async (date) => {
+    setIsApplying(true); // Start applying filter
+    console.log('Applying filter...'); // Log when filter is being applied
+    setFilterDate(date); // Apply filter
+    setIsApplying(false); // Stop applying filter
+    console.log('Filter applied'); // Log after filter is applied
+    handleCloseFilterModal(); // Close filter modal after applying
   };
-
-  const handleResetFilter = () => {
-    setFilterDate('');
-    handleCloseFilterModal(); // Close modal after resetting filter
+  
+  const handleResetFilter = async () => {
+    setIsApplying(true); // Start resetting filter
+    console.log('Resetting filter...'); // Log when filter is being reset
+    setFilterDate(''); // Reset filter date
+    setIsApplying(false); // Stop resetting filter
+    console.log('Filter reset'); // Log after filter is reset
+    handleCloseFilterModal(); // Close filter modal after resetting
   };
+  
 
   if (loading) {
     return <Loader />;
