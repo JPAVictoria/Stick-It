@@ -4,21 +4,25 @@ import { useState } from 'react';
 
 export default function Filter({ open, handleClose, handleApplyFilter, handleResetFilter }) {
   const [selectedDate, setSelectedDate] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     setIsLoading(true);
-    setSelectedDate(""); // Reset the selected date state
-    handleResetFilter(() => setIsLoading(false)); // Trigger parent reset logic if needed
+    setSelectedDate("");
+    await handleResetFilter();
+    setIsLoading(false);
+    handleClose(); // Close modal after operation
   };
 
-  const handleApply = () => {
+  const handleApply = async () => {
     setIsLoading(true);
-    handleApplyFilter(selectedDate, () => setIsLoading(false)); // Pass selectedDate to parent
+    await handleApplyFilter(selectedDate);
+    setIsLoading(false);
+    handleClose(); // Close modal after operation
   };
 
   return (

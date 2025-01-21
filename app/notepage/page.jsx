@@ -33,9 +33,9 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [popup, setPopup] = useState({ open: false, message: '', backgroundColor: '' });
-  const [loading, setLoading] = useState(true); // Add a loading state
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Filter modal state
-  const [filterDate, setFilterDate] = useState(''); // Store filter date
+  const [loading, setLoading] = useState(true);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [filterDate, setFilterDate] = useState('');
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -108,7 +108,7 @@ export default function Home() {
       closeModal();
       setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
     } else if (res.status === 401 || res.status === 403) {
-      document.cookie = 'jwt=; path=/; max-age=0'; // Clear the JWT cookie
+      document.cookie = 'jwt=; path=/; max-age=0';
       setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
       setTimeout(() => window.location.href = '/', 2000);
     } else {
@@ -156,7 +156,7 @@ export default function Home() {
       setSelectedNote(null);
       setPopup({ open: true, message: 'Note deleted successfully', backgroundColor: 'green' });
     } else if (res.status === 401 || res.status === 403) {
-      document.cookie = 'jwt=; path=/; max-age=0'; // Clear the JWT cookie
+      document.cookie = 'jwt=; path=/; max-age=0';
       setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
       setTimeout(() => window.location.href = '/', 2000);
     } else {
@@ -169,16 +169,24 @@ export default function Home() {
   const handleOpenFilterModal = () => setIsFilterModalOpen(true);
   const handleCloseFilterModal = () => setIsFilterModalOpen(false);
 
-  const handleApplyFilter = (date, callback) => {
+  const handleApplyFilter = async (date) => {
     setFilterDate(date);
-    handleCloseFilterModal(); // Close modal after applying filter
-    callback(); // Trigger callback after operation is complete
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        handleCloseFilterModal();
+        resolve();
+      }, 500); // Simulate a delay
+    });
   };
 
-  const handleResetFilter = (callback) => {
+  const handleResetFilter = async () => {
     setFilterDate('');
-    handleCloseFilterModal(); // Close modal after resetting filter
-    callback(); // Trigger callback after operation is complete
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        handleCloseFilterModal();
+        resolve();
+      }, 500); // Simulate a delay
+    });
   };
 
   if (loading) {
