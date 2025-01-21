@@ -11,6 +11,7 @@ import Image from 'next/image';
 import filter2 from '../icons/filter2.png';
 import Filter from '@/app/components/Filter'; // The new filter modal component
 import '@/app/styles/notepage.css';
+
 const getTokenFromCookies = () => {
   const name = 'jwt=';
   const decodedCookie = decodeURIComponent(document.cookie);
@@ -35,7 +36,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true); // Add a loading state
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Filter modal state
   const [filterDate, setFilterDate] = useState(''); // Store filter date
-  const [isApplying, setIsApplying] = useState(false); // State for handling apply button loading
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -45,12 +45,12 @@ export default function Home() {
         setTimeout(() => window.location.href = '/', 2000);
         return;
       }
-
+  
       try {
         const res = await fetch(`/api/notes?date=${filterDate}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         if (res.ok) {
           const data = await res.json();
           setNotes(data);
@@ -169,24 +169,17 @@ export default function Home() {
   const handleOpenFilterModal = () => setIsFilterModalOpen(true);
   const handleCloseFilterModal = () => setIsFilterModalOpen(false);
 
-  const handleApplyFilter = async (date) => {
-    setIsApplying(true); // Start applying filter
-    console.log('Applying filter...'); // Log when filter is being applied
-    setFilterDate(date); // Apply filter
-    setIsApplying(false); // Stop applying filter
-    console.log('Filter applied'); // Log after filter is applied
-    handleCloseFilterModal(); // Close filter modal after applying
+  const handleApplyFilter = (date, callback) => {
+    setFilterDate(date);
+    handleCloseFilterModal(); // Close modal after applying filter
+    callback(); // Trigger callback after operation is complete
   };
-  
-  const handleResetFilter = async () => {
-    setIsApplying(true); // Start resetting filter
-    console.log('Resetting filter...'); // Log when filter is being reset
-    setFilterDate(''); // Reset filter date
-    setIsApplying(false); // Stop resetting filter
-    console.log('Filter reset'); // Log after filter is reset
-    handleCloseFilterModal(); // Close filter modal after resetting
+
+  const handleResetFilter = (callback) => {
+    setFilterDate('');
+    handleCloseFilterModal(); // Close modal after resetting filter
+    callback(); // Trigger callback after operation is complete
   };
-  
 
   if (loading) {
     return <Loader />;
@@ -197,43 +190,42 @@ export default function Home() {
       <Header setNotes={setNotes} setPopup={setPopup} />
       
       <div
-  className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
-  p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
-  style={{ position: 'relative' }}
->
-  {(notes.length > 0 || filterDate) && (
-    <div className="filter-container">
-      <Image
-        src={filter2}
-        alt="filterIcon"
-        className="filter-icon"
-        width={30}
-        onClick={handleOpenFilterModal} // Open filter modal on click
-      />
-    </div>
-  )}
+        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
+        p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
+        style={{ position: 'relative' }}
+      >
+        {(notes.length > 0 || filterDate) && (
+          <div className="filter-container">
+            <Image
+              src={filter2}
+              alt="filterIcon"
+              className="filter-icon"
+              width={30}
+              onClick={handleOpenFilterModal} // Open filter modal on click
+            />
+          </div>
+        )}
 
-  {filterDate && notes.length === 0 ? (
-    <p className="text-[#D1D7E0] pl-8">No notes for this date.</p>
-  ) : notes.length === 0 && !filterDate ? (
-    <p className="text-[#D1D7E0]">No notes available.</p>
-  ) : (
-    notes.map((note) => (
-      <Note
-        key={note.id}
-        id={note.id}
-        title={note.title}
-        description={note.description}
-        timestamp={note.updatedAt || note.createdAt}
-        onClick={() => handleNoteClick(note)}
-        setIsDragging={setIsDragging}
-        setShowDeleteDialog={setShowDeleteDialog}
-        setSelectedNote={setSelectedNote}
-      />
-    ))
-  )}
-</div>
-
+        {filterDate && notes.length === 0 ? (
+          <p className="text-[#D1D7E0] pl-8">No notes for this date.</p>
+        ) : notes.length === 0 && !filterDate ? (
+          <p className="text-[#D1D7E0]">No notes available.</p>
+        ) : (
+          notes.map((note) => (
+            <Note
+              key={note.id}
+              id={note.id}
+              title={note.title}
+              description={note.description}
+              timestamp={note.updatedAt || note.createdAt}
+              onClick={() => handleNoteClick(note)}
+              setIsDragging={setIsDragging}
+              setShowDeleteDialog={setShowDeleteDialog}
+              setSelectedNote={setSelectedNote}
+            />
+          ))
+        )}
+      </div>
 
       {selectedNote && (
         <Modal

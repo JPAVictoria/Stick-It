@@ -4,22 +4,21 @@ import { useState } from 'react';
 
 export default function Filter({ open, handleClose, handleApplyFilter, handleResetFilter }) {
   const [selectedDate, setSelectedDate] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
   };
 
-  const handleReset = async () => {
-    setIsLoading(true); // Start loading when resetting
-    await handleResetFilter(); // Trigger the reset filter logic
-    setIsLoading(false); // Stop loading after resetting
+  const handleReset = () => {
+    setIsLoading(true);
+    setSelectedDate(""); // Reset the selected date state
+    handleResetFilter(() => setIsLoading(false)); // Trigger parent reset logic if needed
   };
 
-  const handleApply = async () => {
-    setIsLoading(true); // Start loading when applying filter
-    await handleApplyFilter(selectedDate); // Pass selectedDate to parent for applying filter
-    setIsLoading(false); // Stop loading after applying filter
+  const handleApply = () => {
+    setIsLoading(true);
+    handleApplyFilter(selectedDate, () => setIsLoading(false)); // Pass selectedDate to parent
   };
 
   return (
@@ -56,17 +55,13 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
       </div>
 
       <DialogActions>
-        <Button onClick={handleClose} sx={{ color: "#383D41" }}>
+        <Button onClick={handleClose} sx={{ color: "#383D41" }} disabled={isLoading}>
           Close
         </Button>
         <Button onClick={handleReset} sx={{ color: "#383D41" }} disabled={isLoading}>
           {isLoading ? 'Resetting...' : 'Reset'}
         </Button>
-        <Button
-          onClick={handleApply}
-          sx={{ color: "#383D41" }}
-          disabled={isLoading}
-        >
+        <Button onClick={handleApply} sx={{ color: "#383D41" }} disabled={isLoading}>
           {isLoading ? 'Applying...' : 'Apply'}
         </Button>
       </DialogActions>
