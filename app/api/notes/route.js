@@ -11,7 +11,7 @@ const verifyToken = (token) => {
   }
 };
 
-// Handle GET request (Fetch all notes)
+// Handle GET request (Fetch all notes or filter by date)
 export async function GET(req) {
   console.log('Handling GET request for notes');
   const token = req.headers.get('Authorization')?.split(' ')[1];
@@ -29,12 +29,35 @@ export async function GET(req) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const date = searchParams.get('date'); // Get the 'date' query parameter
+
   try {
-    // Fetch notes for the logged-in user only
-    const notes = await prisma.note.findMany({
-      where: { userId: decodedToken.id, deleted: false },
-      orderBy: { createdAt: 'desc' },
-    });
+    let notes;
+
+    if (date) {
+      // If a date is provided, filter notes by the createdAt date (same day)
+      const startOfDay = new Date(date + 'T00:00:00');
+      const endOfDay = new Date(date + 'T23:59:59');
+
+      notes = await prisma.note.findMany({
+        where: {
+          userId: decodedToken.id,
+          deleted: false,
+          createdAt: {
+            gte: startOfDay, // Start of the day
+            lt: endOfDay, // End of the day
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    } else {
+      // If no date is provided, fetch all notes
+      notes = await prisma.note.findMany({
+        where: { userId: decodedToken.id, deleted: false },
+        orderBy: { createdAt: 'desc' },
+      });
+    }
 
     console.log('Notes fetched successfully:', notes);
     return new Response(JSON.stringify(notes), { status: 200 });

@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from 'react';
 import { Dialog, DialogTitle, DialogActions, Button } from '@mui/material';
 import { useState } from 'react';
@@ -9,6 +7,11 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
+  };
+
+  const handleReset = () => {
+    setSelectedDate(""); // Reset the selected date state
+    handleResetFilter(); // Trigger parent reset logic if needed
   };
 
   return (
@@ -45,14 +48,14 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
       </div>
 
       <DialogActions>
-      <Button onClick={handleClose} sx={{ color: "#383D41" }}>
-            Close
-          </Button>
-        <Button onClick={handleResetFilter} sx={{ color: "#383D41" }}>
+        <Button onClick={handleClose} sx={{ color: "#383D41" }}>
+          Close
+        </Button>
+        <Button onClick={handleReset} sx={{ color: "#383D41" }}>
           Reset
         </Button>
         <Button
-          onClick={() => handleApplyFilter(selectedDate)}
+          onClick={() => handleApplyFilter(selectedDate)} // Pass selectedDate to parent
           sx={{ color: "#383D41" }}
         >
           Apply

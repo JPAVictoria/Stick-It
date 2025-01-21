@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.1.10",
+    "@mui/icons-material": "^6.4.0",
     "@mui/lab": "^6.0.0-beta.22",
     "@mui/material": "^6.3.1",
     "@mui/x-date-pickers": "^7.23.6",
@@ -32,7 +32,9 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "19.0.0-rc-66855b96-20241106",
-    "react-draggable": "^4.4.6"
+    "react-draggable": "^4.4.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^2.1.4",

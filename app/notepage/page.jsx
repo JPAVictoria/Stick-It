@@ -6,12 +6,11 @@ import Note from '@/app/components/Note';
 import Modal from '@/app/components/Modal';
 import DeleteDialog from '@/app/components/DeleteDialog';
 import Popup from '@/app/components/Popup';
-import Loader from '@/app/components/Loader'; // Import the loader component
-import '@/app/styles/notepage.css';
+import Loader from '@/app/components/Loader';
 import Image from 'next/image';
 import filter2 from '../icons/filter2.png';
 import Filter from '@/app/components/Filter'; // The new filter modal component
-
+import '@/app/styles/notepage.css';
 const getTokenFromCookies = () => {
   const name = 'jwt=';
   const decodedCookie = decodeURIComponent(document.cookie);
@@ -34,8 +33,8 @@ export default function Home() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [popup, setPopup] = useState({ open: false, message: '', backgroundColor: '' });
   const [loading, setLoading] = useState(true); // Add a loading state
-
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Filter modal state
+  const [filterDate, setFilterDate] = useState(''); // Store filter date
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -47,7 +46,7 @@ export default function Home() {
       }
   
       try {
-        const res = await fetch('/api/notes', {
+        const res = await fetch(`/api/notes?date=${filterDate}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
   
@@ -64,8 +63,9 @@ export default function Home() {
         setLoading(false);
       }
     };
+
     fetchNotes();
-  }, []);
+  }, [filterDate]);
 
   const handleNoteClick = (note) => {
     setSelectedNote(note);
@@ -107,13 +107,9 @@ export default function Home() {
       closeModal();
       setPopup({ open: true, message: 'Note updated successfully', backgroundColor: 'green' });
     } else if (res.status === 401 || res.status === 403) {
-      // Token expired or invalid, trigger logout
       document.cookie = 'jwt=; path=/; max-age=0'; // Clear the JWT cookie
       setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
-      setTimeout(() => {
-        // Redirect to login page or reset state
-        window.location.href = '/';
-      }, 2000);
+      setTimeout(() => window.location.href = '/', 2000);
     } else {
       console.error('Failed to update note:', res.status);
     }
@@ -159,13 +155,9 @@ export default function Home() {
       setSelectedNote(null);
       setPopup({ open: true, message: 'Note deleted successfully', backgroundColor: 'green' });
     } else if (res.status === 401 || res.status === 403) {
-      // Token expired or invalid, trigger logout
       document.cookie = 'jwt=; path=/; max-age=0'; // Clear the JWT cookie
       setPopup({ open: true, message: 'Session expired. Please log in again.', backgroundColor: 'red' });
-      setTimeout(() => {
-        // Redirect to login page or reset state
-        window.location.href = '/'; // Redirect to the login page
-      }, 2000);
+      setTimeout(() => window.location.href = '/', 2000);
     } else {
       console.error('Failed to delete note:', res.status);
     }
@@ -176,13 +168,14 @@ export default function Home() {
   const handleOpenFilterModal = () => setIsFilterModalOpen(true);
   const handleCloseFilterModal = () => setIsFilterModalOpen(false);
 
-  const handleApplyFilter = () => {
-    console.log('Apply filter logic goes here.');
+  const handleApplyFilter = (date) => {
+    setFilterDate(date);
     handleCloseFilterModal(); // Close modal after applying filter
   };
 
   const handleResetFilter = () => {
-    console.log('Reset filter logic goes here.');
+    setFilterDate('');
+    handleCloseFilterModal(); // Close modal after resetting filter
   };
 
   if (loading) {
@@ -194,41 +187,43 @@ export default function Home() {
       <Header setNotes={setNotes} setPopup={setPopup} />
       
       <div
-        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
-        p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
-        style={{ position: 'relative' }}
-      >
+  className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
+  p-6 mt-10 rounded-lg shadow-md ${isDragging ? 'dragging-container' : ''}`}
+  style={{ position: 'relative' }}
+>
+  {(notes.length > 0 || filterDate) && (
+    <div className="filter-container">
+      <Image
+        src={filter2}
+        alt="filterIcon"
+        className="filter-icon"
+        width={30}
+        onClick={handleOpenFilterModal} // Open filter modal on click
+      />
+    </div>
+  )}
 
-        {notes.length > 0 && (
-          <div className="filter-container">
-            <Image
-              src={filter2}
-              alt="filterIcon"
-              className="filter-icon"
-              width={30}
-              onClick={handleOpenFilterModal} // Open filter modal on click
-            />
-          </div>
-        )}
+  {filterDate && notes.length === 0 ? (
+    <p className="text-[#D1D7E0] pl-8">No notes for this date.</p>
+  ) : notes.length === 0 && !filterDate ? (
+    <p className="text-[#D1D7E0]">No notes available.</p>
+  ) : (
+    notes.map((note) => (
+      <Note
+        key={note.id}
+        id={note.id}
+        title={note.title}
+        description={note.description}
+        timestamp={note.updatedAt || note.createdAt}
+        onClick={() => handleNoteClick(note)}
+        setIsDragging={setIsDragging}
+        setShowDeleteDialog={setShowDeleteDialog}
+        setSelectedNote={setSelectedNote}
+      />
+    ))
+  )}
+</div>
 
-        {notes.length === 0 ? (
-          <p className="text-[#D1D7E0]">No notes available.</p>
-        ) : (
-          notes.map((note) => (
-            <Note
-              key={note.id}
-              id={note.id}
-              title={note.title}
-              description={note.description}
-              timestamp={note.updatedAt || note.createdAt}
-              onClick={() => handleNoteClick(note)}
-              setIsDragging={setIsDragging}
-              setShowDeleteDialog={setShowDeleteDialog}
-              setSelectedNote={setSelectedNote}
-            />
-          ))
-        )}
-      </div>
 
       {selectedNote && (
         <Modal
@@ -255,7 +250,6 @@ export default function Home() {
         handleClose={closePopup}
       />
 
-      {/* Filter Modal */}
       <Filter
         open={isFilterModalOpen}
         handleClose={handleCloseFilterModal}
