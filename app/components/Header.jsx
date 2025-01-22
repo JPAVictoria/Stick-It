@@ -1,4 +1,4 @@
-"use client"; // Required for client-side rendering
+"use client";
 
 import { useState } from 'react';
 import Image from 'next/image';
@@ -21,7 +21,7 @@ const getTokenFromCookies = () => {
   return '';
 };
 
-export default function Header({ setNotes, setPopup }) {
+export default function Header({ setNotes, setPopup, filterActive }) { // Add filterActive prop
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [newNote, setNewNote] = useState({ title: '', description: '' });
@@ -188,12 +188,16 @@ export default function Header({ setNotes, setPopup }) {
             </h1>
 
             {/* Add note button */}
-            <button
-              className="pt-2 text-lg text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100 mb-2"
-              onClick={() => handleOpen()}
-            >
-              Add note
-            </button>
+          <button
+            className={`pt-2 text-lg text-[#D1D7E0] animate__animated animate__fadeIn hover:text-neutral-100 mb-2 ${
+              filterActive ? 'cursor-not-allowed opacity-50 hover:text-[#D1D7E0]' : ''
+            }`}
+            onClick={() => handleOpen()}
+            disabled={filterActive} // Disable button if filter is active
+          >
+            Add note
+        </button>
+
 
             {/* Logout button */}
             <button
