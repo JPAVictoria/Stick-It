@@ -11,7 +11,7 @@ const verifyToken = (token) => {
   }
 };
 
-// Handle GET request (Fetch all notes or filter by date)
+// Handle GET request (Fetch all notes or filter by date range)
 export async function GET(req) {
   console.log('Handling GET request for notes');
   const token = req.headers.get('Authorization')?.split(' ')[1];
@@ -30,15 +30,32 @@ export async function GET(req) {
   }
 
   const { searchParams } = new URL(req.url);
-  const date = searchParams.get('date'); // Get the 'date' query parameter
+  const startDate = searchParams.get('startDate'); // Get the 'startDate' query parameter
+  const endDate = searchParams.get('endDate'); // Get the 'endDate' query parameter
 
   try {
     let notes;
 
-    if (date) {
-      // If a date is provided, filter notes by the createdAt date (same day)
-      const startOfDay = new Date(date + 'T00:00:00');
-      const endOfDay = new Date(date + 'T23:59:59');
+    if (startDate && endDate) {
+      // If both startDate and endDate are provided, filter notes within that range
+      const startOfDay = new Date(startDate + 'T00:00:00');
+      const endOfDay = new Date(endDate + 'T23:59:59');
+
+      notes = await prisma.note.findMany({
+        where: {
+          userId: decodedToken.id,
+          deleted: false,
+          createdAt: {
+            gte: startOfDay, // Start of the start date
+            lt: endOfDay, // End of the end date
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    } else if (startDate) {
+      // If only startDate is provided, filter notes for that specific day
+      const startOfDay = new Date(startDate + 'T00:00:00');
+      const endOfDay = new Date(startDate + 'T23:59:59');
 
       notes = await prisma.note.findMany({
         where: {
@@ -52,7 +69,7 @@ export async function GET(req) {
         orderBy: { createdAt: 'desc' },
       });
     } else {
-      // If no date is provided, fetch all notes
+      // If no dates are provided, fetch all notes
       notes = await prisma.note.findMany({
         where: { userId: decodedToken.id, deleted: false },
         orderBy: { createdAt: 'desc' },

@@ -3,16 +3,22 @@ import { Dialog, DialogTitle, DialogActions, Button } from '@mui/material';
 import { useState } from 'react';
 
 export default function Filter({ open, handleClose, handleApplyFilter, handleResetFilter }) {
-  const [selectedDate, setSelectedDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
   };
 
   const handleReset = async () => {
     setIsLoading(true);
-    setSelectedDate("");
+    setStartDate("");
+    setEndDate("");
     await handleResetFilter();
     setIsLoading(false);
     handleClose(); // Close modal after operation
@@ -20,7 +26,7 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
 
   const handleApply = async () => {
     setIsLoading(true);
-    await handleApplyFilter(selectedDate);
+    await handleApplyFilter({ startDate, endDate });
     setIsLoading(false);
     handleClose(); // Close modal after operation
   };
@@ -33,7 +39,7 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
         "& .MuiDialog-paper": {
           borderRadius: "10px",
           width: "450px",
-          height: "350px",
+          height: "400px",
         },
       }}
     >
@@ -42,20 +48,45 @@ export default function Filter({ open, handleClose, handleApplyFilter, handleRes
       </div>
 
       <div className="p-4" style={{ flex: 1 }}>
-        <input
-          type="date"
-          id="custom-date-picker"
-          value={selectedDate}
-          onChange={handleDateChange}
-          style={{
-            width: "100%",
-            padding: "10px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-            fontSize: "16px",
-            cursor: "pointer"
-          }}
-        />
+        <div style={{ marginBottom: "20px" }}>
+          <label htmlFor="start-date-picker" style={{ display: "block", marginBottom: "5px", color: "#383D41" }}>
+            Start Date:
+          </label>
+          <input
+            type="date"
+            id="start-date-picker"
+            value={startDate}
+            onChange={handleStartDateChange}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              fontSize: "16px",
+              cursor: "pointer"
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label htmlFor="end-date-picker" style={{ display: "block", marginBottom: "5px", color: "#383D41" }}>
+            End Date:
+          </label>
+          <input
+            type="date"
+            id="end-date-picker"
+            value={endDate}
+            onChange={handleEndDateChange}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              fontSize: "16px",
+              cursor: "pointer"
+            }}
+          />
+        </div>
       </div>
 
       <DialogActions>
