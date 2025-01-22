@@ -34,63 +34,65 @@ svg {
 }
 
 .navbar {
-    position: relative;
-    z-index: 20;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
+  position: relative;
+  z-index: 20;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .logo {
-    font-size: 2.5rem;
-    font-weight: bold;
-  }
-  
-  .navbar .links {
-    display: flex;
-    gap: 30px;
-  }
-  
-  .navbar a {
-    color: white;
-    text-decoration: none;
-    font-size: 1rem;
-    position: relative;
-  }
-  
-  .navbar .menu-icon {
-    display: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  @media screen and (max-width: 668px) {
-    .navbar {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-left: 10%;
+  position: relative; /* Needed for the pseudo-element to work */
+  cursor: pointer; /* Makes the logo clearly clickable */
+}
+
+.navbar .links {
+  display: flex;
+  gap: 30px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  position: relative;
+}
+
+.navbar .menu-icon {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 668px) {
+  .navbar {
       flex-wrap: wrap;
       text-align: center;
-    }
-  
-    .navbar .links {
+  }
+
+  .navbar .links {
       display: none;
       flex-direction: column;
       width: 100%;
       padding-top: 30px;
-    }
-  
-    .navbar .links.active {
-      display: flex;
-    }
-  
-    .navbar .menu-icon {
-      display: block;
-    }
   }
-  
 
+  .navbar .links.active {
+      display: flex;
+  }
 
-.navbar a::before {
+  .navbar .menu-icon {
+      display: block;
+  }
+}
+
+/* Hover effect for links */
+.navbar a::before, .logo::before {
   content: '';
   position: absolute;
   width: 100%;
@@ -104,18 +106,10 @@ svg {
   transition: transform .3s ease-in-out;
 }
 
-.navbar a:hover::before {
+/* Hover effect activation */
+.navbar a:hover::before, .logo:hover::before {
   transform-origin: left;
   transform: scaleX(1);
-}
-
-
-.logo{
-
-  font-size: 2rem;
-  font-weight: bold;
-  margin-left: 10%;
-
 }
 
 /**HEADER CODE ABOVE */
