@@ -21,7 +21,7 @@ export async function POST(req) {
       return new Response(JSON.stringify({ error: 'Email not found' }), { status: 400 });
     }
 
-    const resetToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const resetToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '10m' });
 
     const resetLink = `https://stick-it-beta.vercel.app/change-password?token=${resetToken}`;
 
