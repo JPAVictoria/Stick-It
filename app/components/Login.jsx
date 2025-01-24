@@ -3,7 +3,6 @@
 import "@/app/styles/login.css";
 import { useState } from "react";
 import { useSnackbar } from "@/app/components/Snackbar.jsx"; // Access the global snackbar
-import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -25,8 +24,7 @@ export default function Login() {
     e.preventDefault();
 
     const { email, password } = formData;
-    setLoading(true); // Set loading to true when the form is submitted
-
+    setLoading(true); 
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -87,14 +85,13 @@ export default function Login() {
         <button type="submit" className="loginbutton" disabled={loading}>
           {loading ? "Logging in..." : "Log In"} {/* Display loading text */}
         </button>
-      </form>
+        <div
+          className="forgot-password-container forgot-password"
+          onClick={() => (window.location.href = "/forgot-password")} >
+          Forgot Password?
+      </div>
 
-      {/* Show loader when the form is submitting */}
-      {loading && (
-        <div className="loader">
-          <div className="spinner"></div>
-        </div>
-      )}
+      </form>
     </div>
   );
 }

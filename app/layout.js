@@ -1,4 +1,5 @@
 "use client";
+import { SnackbarProvider } from "@/app/components/Snackbar";  // Import SnackbarProvider
 import "./globals.css";
 
 export default function RootLayout({ children }) {
@@ -8,7 +9,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.png" sizes="any" />
         <title>Stick it | CRUD Next.js</title>
       </head>
-      <body>{children}</body>
+      <body>
+        <SnackbarProvider>  {/* Wrap the children with SnackbarProvider */}
+          {children}
+        </SnackbarProvider>
+      </body>
     </html>
   );
 }

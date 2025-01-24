@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 form {
-  height: 350px;
+  height: 360px;
   width: 350px;
   background-color: rgba(255, 255, 255, 0.13);
   border-radius: 10px;
@@ -43,7 +43,7 @@ label {
 
 .loginbutton {
   padding: 5px 0;
-  margin-top: 30px;
+  margin-top: 25px;
   width: 100%;
   background-color: #ffffff;
   color: #080710;
@@ -89,5 +89,24 @@ label {
     padding: 10px 0; 
   }
 }
+
+.forgot-password-container {
+  text-align: center; 
+  margin-top: 20px; 
+  font-size: 14px;
+}
+
+.forgot-password {
+  background: none; 
+  cursor: pointer; 
+  text-decoration: underline;
+}
+
+.forgot-password:hover {
+
+    opacity: 75%;
+}
+
+
 
 
