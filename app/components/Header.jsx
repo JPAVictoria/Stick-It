@@ -219,7 +219,7 @@ export default function Header({ setNotes, setPopup, filterActive }) { // Add fi
               borderStyle: 'dashed',
               borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
               borderRadius: '10px',
-              transition: 'border-color 0.2s ease-in-out',
+              transition: 'border-color 0.3s ease-in-out',
             }}
           >
             <Image
