@@ -215,7 +215,7 @@ export default function Header({ setNotes, setPopup, filterActive }) { // Add fi
             onDragLeave={handleDragLeaveGarbage}
             onDrop={handleDropOnGarbage}
             style={{
-              borderWidth: '3px',
+              borderWidth: '2px',
               borderStyle: 'dashed',
               borderColor: isGarbageHovered ? '#D1D7E0' : 'transparent',
               borderRadius: '10px',
